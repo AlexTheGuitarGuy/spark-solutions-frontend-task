@@ -1,17 +1,11 @@
 import * as axios from 'axios'
-import { LoginFormPayload } from '../components/Login/Login'
+import { ValidLoginPayload } from '../redux/auth-reducer/auth-reducer'
 
-export enum ResultCodes {
-  Success = 0,
-  Error = 1,
-}
+import { RegisterFormPayload } from '../components/Authentication/Register/Register'
 
 export const instance = axios.default.create({
   baseURL: 'https://doit.reigncode.dev/',
 })
-
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjYsImlhdCI6MTY2NTQwMDQwMSwiZXhwIjoxNjczMTc2NDAxfQ.yrAsWRLk0e9FggidGuPDqy6ZcMx1ivFZ5CwwvETjAWw'
 
 export type LoginError = { message: string }
 
@@ -43,19 +37,28 @@ export type UserData = {
   city: null | string
 }
 
-export type LoginSuccess = {
-  token: string
-  user: UserData
+export type LoginResponse = {
+  token?: string
+  user?: UserData
+  message?: string
 }
 
-export type LoginRespone = LoginError | LoginSuccess
+export type RegisterResponse = {
+  message: string
+  token?: string
+}
 
 export const securityAPI = {
-  login: async (loginPayload: LoginFormPayload) => {
-    const response = await instance.post<LoginRespone>(`auth/login`, {
-      ...loginPayload,
-      fcm_token: token,
+  login: async (payload: ValidLoginPayload) => {
+    const response = await instance.post<LoginResponse>(`auth/login`, {
+      ...payload,
+      fcm_token: 'sadsadas',
     })
+
+    return response.data
+  },
+  register: async (payload: RegisterFormPayload) => {
+    const response = await instance.post<RegisterResponse>(`auth/register`, payload)
 
     return response.data
   },

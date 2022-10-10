@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 
-import { useAppDispatch, useAppSelector } from './hooks/reduxHooks'
+import { useAppDispatch } from './hooks/reduxHooks'
 
-import { initializeApp, appActions } from './redux/app-reducer/app-reducer'
-import { getIsAppInitialized } from './redux/app-reducer/app-selector'
+import { appActions } from './redux/app-reducer/app-reducer'
 
-import Loading from './components/common/Loading/Loading'
-import Login from './components/Login/Login'
+import Login from './components/Authentication/Login/Login'
+import Register from './components/Authentication/Register/Register'
+import Alert from './components/Alert/Alert'
+import Home from './components/Home/Home'
 
 function App() {
-  const isAppInitialized = useAppSelector(getIsAppInitialized)
-
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -30,16 +30,24 @@ function App() {
       window.removeEventListener('unhandledrejection', handleRejection)
     }
   })
-
-  useEffect(() => {
+  /*  useEffect(() => {
     dispatch(initializeApp())
-  }, [dispatch, isAppInitialized])
+  }, [dispatch, isAppInitialized])*/
 
   /*  if (!isAppInitialized) return <Loading />
    */
   return (
-    <div>
-      <Login />
+    <div className='w-full'>
+      <div className='z-10'>
+        <Alert />
+        <Routes>
+          <Route path='/' element={<Navigate to='/home' />} />
+          <Route path='/home' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='*' element={<div>404</div>} />
+        </Routes>
+      </div>
     </div>
   )
 }

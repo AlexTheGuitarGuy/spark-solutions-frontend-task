@@ -1,35 +1,40 @@
-import { securityAPI, UserData } from '../../api/API'
-import { LoginFormPayload } from '../../components/Login/Login'
+import { AxiosError } from 'axios'
+
+import { securityAPI, LoginResponse } from '../../api/API'
 
 import { InferAction, InferThunk } from '../store'
 import { setAlertFromThunk } from '../app-reducer/app-reducer'
+import { RegisterFormPayload } from '../../components/Authentication/Register/Register'
 
 const initialState = {
-  id: 0,
-  uuid: '',
-  avatar: '' as null | string,
-  firstname: '' as null | string,
-  lastname: '' as null | string,
-  email: '',
-  phone: '' as null | string,
-  lang: '',
-  provider: '' as null | string,
-  description: '' as null | string,
-  birthDate: '' as null | string,
-  courierRating: 0,
-  ownerRating: 0,
-  countryId: 0 as null | number,
-  cityId: 0 as null | number,
-  isPhoneConfirmed: false,
-  isEmailConfirmed: false,
-  isExecutor: false,
-  notificationEnabled: false,
-  emailsEnabled: false,
-  createdAt: '',
-  updatedAt: '',
-  fullname: '' as null | string,
-  country: '' as null | string,
-  city: '' as null | string,
+  token: '',
+  user: {
+    id: 0,
+    uuid: '',
+    avatar: '' as null | string,
+    firstname: '' as null | string,
+    lastname: '' as null | string,
+    email: '',
+    phone: '' as null | string,
+    lang: '',
+    provider: '' as null | string,
+    description: '' as null | string,
+    birthDate: '' as null | string,
+    courierRating: 0,
+    ownerRating: 0,
+    countryId: 0 as null | number,
+    cityId: 0 as null | number,
+    isPhoneConfirmed: false,
+    isEmailConfirmed: false,
+    isExecutor: false,
+    notificationEnabled: false,
+    emailsEnabled: false,
+    createdAt: '',
+    updatedAt: '',
+    fullname: '' as null | string,
+    country: '' as null | string,
+    city: '' as null | string,
+  },
   isLoggedIn: false,
 }
 
@@ -51,7 +56,7 @@ const authReducer = (state = initialState, action: AuthAction): AuthReducerState
   }
 }
 
-type SetDataPayload = UserData & {
+type SetDataPayload = LoginResponse & {
   isLoggedIn: boolean
 }
 
@@ -63,30 +68,50 @@ const authActions = {
     } as const),
 }
 
-export const auth = (): AuthThunk => {
+export type ValidLoginPayload = {
+  email?: string
+  phone?: string
+  password: string
+}
+export const login = (payload: ValidLoginPayload): AuthThunk => {
   return async (dispatch) => {
-    /*    const data = await securityAPI.me()
-    if (data.resultCode === ResultCodes.Success) {
-      dispatch(authActions.setData({ ...data.data, isLoggedIn: true }))
-    }*/
+    let response
+    try {
+      response = await securityAPI.login(payload)
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const message = error.response?.data.message || 'An error has occurred'
+        dispatch(setAlertFromThunk({ message, type: 'error' }))
+        return
+      }
+      console.log('Error at auth reducer inside login thunk:', error)
+    }
+
+    dispatch(authActions.setData({ ...response, isLoggedIn: true }))
+    dispatch(setAlertFromThunk({ message: 'logged in', type: 'success' }))
   }
 }
 
-export const login = (payload: LoginFormPayload): AuthThunk => {
+export const register = (payload: RegisterFormPayload): AuthThunk => {
   return async (dispatch) => {
-    console.log(payload)
+    let response
+    try {
+      response = await securityAPI.register(payload)
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const message = error.response?.data.message || 'An error has occurred'
+        dispatch(setAlertFromThunk({ message, type: 'error' }))
+        return
+      }
+      console.log('Error at auth reducer inside register thunk:', error)
+    }
 
-    const data = await securityAPI.login(payload)
-
-    console.log(data)
-
-    /*    if (!data?.message) {
-      dispatch(auth())
-      dispatch(setAlertFromThunk({ message: 'logged in', type: 'success' }))
-    } else {
-      const message = data.message || 'An error has occurred'
-      dispatch(setAlertFromThunk({ message, type: 'error' }))
-    }*/
+    dispatch(
+      setAlertFromThunk({
+        message: response?.message || 'Successfully registered',
+        type: 'success',
+      }),
+    )
   }
 }
 /*

@@ -19,6 +19,7 @@ type FormInputProps = {
 		text: string
 		className?: string
 	}
+	className?: string
 }
 
 const FormInput: FC<FormInputProps> = ({
@@ -26,9 +27,10 @@ const FormInput: FC<FormInputProps> = ({
 	error,
 	otherError,
 	label,
+	className,
 }) => {
 	return (
-		<>
+		<div className={className || ''}>
 			{label && (
 				<label htmlFor={field.name} className={label.className}>
 					{label.text}
@@ -41,8 +43,8 @@ const FormInput: FC<FormInputProps> = ({
 				type={type}
 				className={cn(
 					`rounded 
-                    border border-gray-300 border-solid
-                    focus:outline-none focus:border-gray-600
+                    border border-blue-300 border-solid
+                    focus:outline-none focus:border-blue-600
                     focus:text-gray-800
                     transition ease-in-out
                     bg-clip-padding`,
@@ -71,7 +73,7 @@ const FormInput: FC<FormInputProps> = ({
 					)}
 				/>
 			)}
-		</>
+		</div>
 	)
 }
 export default FormInput

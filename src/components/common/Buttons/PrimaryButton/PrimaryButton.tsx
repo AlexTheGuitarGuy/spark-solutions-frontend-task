@@ -65,7 +65,6 @@ const PrimaryButton: FC<PrimaryButtonProps> = ({
 					className={cn(
 						`text-white font-semibold
 	                    rounded
-
 	                    shadow-md 
 	                    focus:outline-none focus:ring-0
 	                    transition duration-150 ease-in-out`,

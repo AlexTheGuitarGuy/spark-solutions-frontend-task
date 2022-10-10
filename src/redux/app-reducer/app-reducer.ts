@@ -1,4 +1,3 @@
-import { auth } from '../auth-reducer/auth-reducer'
 import { Alert } from '../../types/types'
 import { InferAction, InferThunk } from '../store'
 
@@ -6,8 +5,8 @@ const APP_INITIALIZED = 'IN_LINK/APP_REDUCER/APP_INITIALIZED'
 const SET_ALERT = 'IN_LINK/APP_REDUCER/SET_ALERT'
 
 const initialState = {
-  isAppInitialized: false,
-  alert: { message: '', type: 'alert' } as Alert,
+  /*  isAppInitialized: false,
+   */ alert: { message: '', type: 'alert' } as Alert,
 }
 
 export type AppReducerState = typeof initialState
@@ -48,13 +47,13 @@ export const setAlertFromThunk =
   async (dispatch) => {
     dispatch(appActions.setAlert(alert))
   }
-
+/*
 export const initializeApp = (): AppThunk => async (dispatch) => {
   const authPromise = dispatch(auth())
 
   await Promise.all([authPromise])
 
   dispatch(appActions.initializeSuccess())
-}
+}*/
 
 export default appReducer
