@@ -47,6 +47,7 @@ type AuthThunk = InferThunk<AuthAction>
 const authReducer = (state = initialState, action: AuthAction): AuthReducerState => {
   switch (action.type) {
     case 'IN_LINK/AUTH_REDUCER/SET_DATA':
+    case 'IN_LINK/AUTH_REDUCER/SET_IS_LOGGED_IN':
       return {
         ...state,
         ...action.payload,
@@ -56,15 +57,16 @@ const authReducer = (state = initialState, action: AuthAction): AuthReducerState
   }
 }
 
-type SetDataPayload = LoginResponse & {
-  isLoggedIn: boolean
-}
-
 const authActions = {
-  setData: (data: SetDataPayload) =>
+  setData: (data: LoginResponse) =>
     ({
       type: 'IN_LINK/AUTH_REDUCER/SET_DATA',
       payload: { ...data },
+    } as const),
+  setIsLoggedIn: (isLoggedIn: boolean) =>
+    ({
+      type: 'IN_LINK/AUTH_REDUCER/SET_IS_LOGGED_IN',
+      payload: { isLoggedIn },
     } as const),
 }
 
@@ -87,8 +89,23 @@ export const login = (payload: ValidLoginPayload): AuthThunk => {
       console.log('Error at auth reducer inside login thunk:', error)
     }
 
-    dispatch(authActions.setData({ ...response, isLoggedIn: true }))
+    localStorage.setItem('token', JSON.stringify({ token: response?.token }))
+
+    response && dispatch(authActions.setData(response))
+    dispatch(authActions.setIsLoggedIn(true))
+
     dispatch(setAlertFromThunk({ message: 'logged in', type: 'success' }))
+  }
+}
+
+export const loginByToken = (): AuthThunk => {
+  return async (dispatch) => {
+    const stringToken = localStorage.getItem('token')
+    const token = typeof stringToken === 'string' ? JSON.parse(stringToken) : ''
+
+    if (token) {
+      dispatch(authActions.setIsLoggedIn(true))
+    }
   }
 }
 

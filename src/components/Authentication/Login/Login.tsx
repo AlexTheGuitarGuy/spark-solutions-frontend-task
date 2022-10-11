@@ -1,12 +1,12 @@
-import { Navigate } from 'react-router-dom'
+import { NavLink, Navigate } from 'react-router-dom'
 import { Form, Formik, FormikHelpers, FormikProps } from 'formik'
 import * as Yup from 'yup'
 
 import { login } from '../../../redux/auth-reducer/auth-reducer'
 import { getIsLoggedIn } from '../../../redux/auth-reducer/auth-selector'
+import { getIsAppInitialized } from '../../../redux/app-reducer/app-selector'
 import { useAppSelector, useAppDispatch } from '../../../hooks/reduxHooks'
 
-import FormInput from '../../common/Inputs/FormInput/FormInput'
 import PrimaryButton from '../../common/Buttons/PrimaryButton/PrimaryButton'
 import CommonAuthInput from '../CommonAuthInput/CommonAuthInput'
 
@@ -104,6 +104,15 @@ const Login = () => {
                     >
                       Log in
                     </PrimaryButton>
+                    <p className='text-sm font-semibold mt-2 pt-1 mb-0'>
+                      Don't have an account?
+                      <NavLink
+                        to='/register'
+                        className='text-blue-600 hover:text-blue-700 focus:text-blue-700 transition duration-200 ease-in-out'
+                      >
+                        Register
+                      </NavLink>
+                    </p>
                   </>
                 </Form>
               )}

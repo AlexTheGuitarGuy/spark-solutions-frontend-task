@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom'
+import { NavLink, Navigate } from 'react-router-dom'
 import { Form, Formik, FormikHelpers, FormikProps } from 'formik'
 import * as Yup from 'yup'
 
@@ -125,6 +125,17 @@ const Register = () => {
 											>
 												Register
 											</PrimaryButton>
+										</div>
+										<div className='flex justify-center'>
+											<p className='text-sm font-semibold mt-2 pt-1 mb-0'>
+												Already have an account?
+												<NavLink
+													to='/login'
+													className='text-blue-600 hover:text-blue-700 focus:text-blue-700 transition duration-200 ease-in-out'
+												>
+													Log in
+												</NavLink>
+											</p>
 										</div>
 									</>
 								</Form>
